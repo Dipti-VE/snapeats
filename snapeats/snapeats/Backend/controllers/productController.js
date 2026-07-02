@@ -1,84 +1,104 @@
 import Product from "../models/Product.js";
 import redisClient from "../utils/redisClient.js";
 
+console.log("✅ NEW productController loaded");
+console.log("Redis Client:", redisClient);
 
 // ==============================
 // ADD PRODUCT
 // ==============================
 export const addProduct = async (req, res) => {
- try {
+  try {
+    console.log("📦 Upload File:", req.file);
+    console.log("Redis Client:", redisClient);
 
-  console.log(req.file);   // debug
+    const { name, price, category, description } = req.body;
 
-  const { name, price, category, description } = req.body;
+    if (!name || !price) {
+      return res.status(400).json({
+        success: false,
+        message: "Name and price are required",
+      });
+    }
 
-  // 🔥 validation (added)
-  if (!name || !price) {
-    return res.status(400).json({ message: "Name and price required" });
+    const image = req.file ? req.file.filename : null;
+
+    const product = new Product({
+      name,
+      price,
+      category,
+      description,
+      images: image ? [image] : [],
+    });
+
+    await product.save();
+
+    // Clear Redis cache only if Redis is enabled
+    if (redisClient) {
+      await redisClient.del("products");
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Product added successfully",
+      product,
+    });
+  } catch (error) {
+    console.error("❌ Add Product Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
-
-  const image = req.file ? req.file.filename : null;
-
-  const product = new Product({
-   name,
-   price,
-   category,
-   description,
-   images: image ? [image] : []
-  });
-
-  await product.save();
-
-  // 🔥 clear cache
-  await redisClient.del("products");
-
-  res.json({
-   success: true,
-   message: "Product added successfully"
-  });
-
- } catch (error) {
-  console.log(error);
-  res.status(500).json({ message: "Server error" });
- }
 };
 
-
 // ==============================
-// GET ALL PRODUCTS
+// GET PRODUCTS
 // ==============================
 export const getProducts = async (req, res) => {
   try {
+    console.log("Redis Client:", redisClient);
 
-    const cachedProducts = await redisClient.get("products");
+    let cachedProducts = null;
 
-    // 🔥 only use cache if NOT empty
-    if (cachedProducts && JSON.parse(cachedProducts).length > 0) {
-      console.log("Serving from Redis ⚡");
+    if (redisClient) {
+      cachedProducts = await redisClient.get("products");
+    }
+
+    if (cachedProducts) {
+      console.log("⚡ Serving products from Redis");
       return res.json(JSON.parse(cachedProducts));
     }
 
     const products = await Product.find();
 
-    console.log("Serving from MongoDB 🐢");
-    console.log("Products from DB:", products); // 🔥 debug
+    console.log("🐢 Serving products from MongoDB");
 
-    // 🔥 store in Redis
-    await redisClient.setEx("products", 60, JSON.stringify(products));
+    if (redisClient) {
+      await redisClient.setEx(
+        "products",
+        60,
+        JSON.stringify(products)
+      );
+    }
 
-    res.json(products);
+    return res.json(products);
+  } catch (error) {
+    console.error("❌ Get Products Error:", error);
 
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
+
 // ==============================
 // UPDATE PRODUCT
 // ==============================
 export const updateProduct = async (req, res) => {
   try {
-
     const { name, price, category, description } = req.body;
 
     const image = req.file ? req.file.filename : null;
@@ -90,7 +110,6 @@ export const updateProduct = async (req, res) => {
       description,
     };
 
-    // ✅ update image only if new uploaded
     if (image) {
       updatedData.images = [image];
     }
@@ -101,17 +120,22 @@ export const updateProduct = async (req, res) => {
       { new: true }
     );
 
-    // 🔥 clear cache
-    await redisClient.del("products");
+    if (redisClient) {
+      await redisClient.del("products");
+    }
 
-    res.json({
+    return res.json({
       success: true,
-      product
+      message: "Product updated successfully",
+      product,
     });
+  } catch (error) {
+    console.error("❌ Update Product Error:", error);
 
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Update failed" });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -119,24 +143,23 @@ export const updateProduct = async (req, res) => {
 // DELETE PRODUCT
 // ==============================
 export const deleteProduct = async (req, res) => {
-
   try {
-
     await Product.findByIdAndDelete(req.params.id);
 
-    // 🔥 clear cache
-    await redisClient.del("products");
+    if (redisClient) {
+      await redisClient.del("products");
+    }
 
-    res.json({
+    return res.json({
       success: true,
-      message: "Product deleted"
+      message: "Product deleted successfully",
     });
+  } catch (error) {
+    console.error("❌ Delete Product Error:", error);
 
-  } catch (err) {
-
-    console.log(err);
-    res.status(500).json({ message: "Server error" });
-
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
-
 };

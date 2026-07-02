@@ -5,8 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function AdminAddProduct() {
 
  const navigate = useNavigate();
- const { id } = useParams(); // ✅ already added
-
+ const { id } = useParams(); 
  const [name,setName] = useState("");
  const [price,setPrice] = useState("");
  const [category,setCategory] = useState("");

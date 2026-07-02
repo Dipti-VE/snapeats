@@ -8,12 +8,20 @@ export const chatWithAI = async (req, res) => {
   try {
     const { message } = req.body;
 
+    console.log("====================================");
+    console.log("📨 Chat Request Received");
+    console.log("User Message:", message);
+    console.log("OPENAI_API_KEY Exists:", !!process.env.OPENAI_API_KEY);
+
     if (!message) {
       return res.status(400).json({
         success: false,
         message: "Message is required",
       });
     }
+
+    console.log("🚀 Sending request to OpenAI...");
+    console.time("OpenAI Response Time");
 
     const completion = await client.chat.completions.create({
       model: "gpt-4.1-mini",
@@ -41,16 +49,30 @@ Your job is to:
       max_tokens: 300,
     });
 
+    console.timeEnd("OpenAI Response Time");
+
+    console.log("✅ OpenAI Response Received");
+    console.log(
+      "Reply:",
+      completion?.choices?.[0]?.message?.content
+    );
+
     return res.status(200).json({
       success: true,
-      reply: completion.choices[0].message.content,
+      reply: completion.choices?.[0]?.message?.content || "No response from AI",
     });
+
   } catch (error) {
-    console.error("OpenAI Error:", error);
+    console.error("====================================");
+    console.error("❌ OpenAI Error");
+    console.error("Message:", error.message);
+    console.error("Status:", error.status);
+    console.error("Code:", error.code);
+    console.error("Full Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Something went wrong.",
+      message: error.message || "Something went wrong.",
     });
   }
 };
