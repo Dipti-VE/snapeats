@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ChatBot from "./components/ChatBot";
 
 // Pages
 import Home from "./pages/Home";
@@ -321,6 +322,8 @@ function MainApp() {
       {/* ✅ HIDE FOOTER ON ADMIN + REVIEW */}
       {!isAdminPage && !isReviewPage && <Footer />}
 
+{/* AI ChatBot */}
+{!isAdminPage && <ChatBot />}
     </div>
   );
 }

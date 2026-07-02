@@ -13,6 +13,8 @@ import restaurantRoutes from "./routes/restaurantRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+
 
 import User from "./models/User.js";
 import { checkActiveUsers } from "./utils/engagementMailer.js";
@@ -20,7 +22,7 @@ import { checkActiveUsers } from "./utils/engagementMailer.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 // ==============================
 // CORS
@@ -74,6 +76,7 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/chat", chatRoutes);
 
 // ==============================
 // CREATE DEFAULT ADMIN
