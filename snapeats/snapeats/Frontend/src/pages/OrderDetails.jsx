@@ -10,7 +10,7 @@ export default function OrderDetails() {
     const fetchOrder = async () => {
       try {
         const res = await axios.get(
-          `http://127.0.0.1:5000/api/orders/details/${orderId}`
+          `http://127.0.0.1:4000/api/orders/details/${orderId}`
         );
         setOrder(res.data);
       } catch (err) {
@@ -105,7 +105,7 @@ export default function OrderDetails() {
           <div className="mt-6 text-center">
 
             <a
-              href={`http://127.0.0.1:5000${order.invoice}`}
+              href={`http://127.0.0.1:4000${order.invoice}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-blue-500 text-white px-4 py-2 rounded mr-3"
@@ -114,7 +114,7 @@ export default function OrderDetails() {
             </a>
 
             <a
-              href={`http://127.0.0.1:5000/api/orders/download/${order.invoice.split("/").pop()}`}
+              href={`http://127.0.0.1:4000/api/orders/download/${order.invoice.split("/").pop()}`}
               className="bg-green-500 text-white px-4 py-2 rounded"
             >
               Download Invoice

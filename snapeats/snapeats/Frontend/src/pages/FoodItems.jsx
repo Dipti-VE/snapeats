@@ -85,7 +85,7 @@ export default function Menu({ onAddToCart }) {
     const token = localStorage.getItem("token");
 
     await axios.post(
-      `http://127.0.0.1:5000/api/products/${productId}/rate`,
+      `http://127.0.0.1:4000/api/products/${productId}/rate`,
       { rating: userRating, comment },
       {
         headers: {
@@ -104,7 +104,7 @@ export default function Menu({ onAddToCart }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:5000/api/products");
+        const res = await axios.get("http://127.0.0.1:4000/api/products");
         setAdminProducts(res.data);
       } catch (error) {
         console.log(error);
@@ -123,7 +123,7 @@ export default function Menu({ onAddToCart }) {
       type: "Admin",
       description: p.description,
       rating: p.averageRating || 4, // ⭐ IMPORTANT
-      image: `http://127.0.0.1:5000/uploads/${p.images[0]}`
+      image: `http://127.0.0.1:4000/uploads/${p.images[0]}`
     }))
   ];
 

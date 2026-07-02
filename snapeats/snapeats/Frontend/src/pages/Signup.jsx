@@ -12,7 +12,7 @@ export default function Signup() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const BASE_URL = "http://127.0.0.1:5000";
+  const BASE_URL = "http://127.0.0.1:4000";
 
   const handleSignup = async (e) => {
     e.preventDefault();

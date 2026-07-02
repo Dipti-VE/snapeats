@@ -11,7 +11,7 @@ const Review = () => {
   const submitReview = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/reviews/add",
+        "http://localhost:4000/api/reviews/add",
         {
           rating,
           comment,

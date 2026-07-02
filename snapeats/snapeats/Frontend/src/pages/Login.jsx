@@ -56,10 +56,13 @@ export default function Login({ setUser }) {
         window.location.href = "/";
       }
 
-    } catch (err) {
-      console.log(err);
-      setMessage("Invalid OTP ❌");
-    }
+    }catch (err) {
+  console.log("Verify OTP Error:", err.response?.data);
+
+  setMessage(
+    err.response?.data?.message || "Verification failed"
+  );
+}
   };
 
   return (

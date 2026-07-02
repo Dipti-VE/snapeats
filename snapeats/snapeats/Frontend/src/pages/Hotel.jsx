@@ -64,7 +64,7 @@ export default function Hotel() {
   // ⭐ FETCH FROM BACKEND
   const fetchHotels = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:5000/api/restaurants");
+      const res = await axios.get("http://127.0.0.1:4000/api/restaurants");
       setDbHotels(res.data);
     } catch (err) {
       console.log(err);
@@ -83,7 +83,7 @@ export default function Hotel() {
       name: h.name,
       type: "Restaurant",
       rating: 4.0,
-      image: `http://127.0.0.1:5000/uploads/${h.image}`,
+      image: `http://127.0.0.1:4000/uploads/${h.image}`,
       location: h.location,
       description: h.description,
       amenities: ["Food Available"],

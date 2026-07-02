@@ -11,7 +11,7 @@ export default function Orders() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:5000/api/orders/user/${encodeURIComponent(
+        `http://127.0.0.1:4000/api/orders/user/${encodeURIComponent(
           user.email
         )}`
       );
@@ -27,7 +27,7 @@ export default function Orders() {
   
   const cancelOrder = async (id) => {
     try {
-      await axios.post("http://127.0.0.1:5000/api/orders/cancel", {
+      await axios.post("http://127.0.0.1:4000/api/orders/cancel", {
         orderId: id,
       });
 
