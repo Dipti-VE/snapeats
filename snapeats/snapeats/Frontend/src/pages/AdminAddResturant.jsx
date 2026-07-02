@@ -25,7 +25,7 @@ export default function AdminAddRestaurant(){
    formData.append("image", image);
 
    await axios.post(
-    "http://127.0.0.1:5000/api/restaurants/add",
+    "http://127.0.0.1:4000/api/restaurants/add",
     formData
    );
 

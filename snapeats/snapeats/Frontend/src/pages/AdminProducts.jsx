@@ -9,7 +9,7 @@ export default function AdminProducts(){
 
  const fetchProducts = async()=>{
 
-  const res = await axios.get("http://127.0.0.1:5000/api/products");
+  const res = await axios.get("http://127.0.0.1:4000/api/products");
 
   setProducts(res.data);
 
@@ -22,7 +22,7 @@ export default function AdminProducts(){
 
  const deleteProduct = async(id)=>{
 
-  await axios.delete(`http://127.0.0.1:5000/api/products/${id}`);
+  await axios.delete(`http://127.0.0.1:4000/api/products/${id}`);
 
   fetchProducts();
 

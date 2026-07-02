@@ -2,55 +2,71 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import bcrypt from "bcryptjs";
 
 import authRoutes from "./routes/auth.js";
 import menuRoutes from "./routes/menu.js";
 import paymentRoutes from "./routes/PaymentRoute.js";
 import orderRoutes from "./routes/orderRoutes.js";
-import User from "./models/User.js";
 import productRoutes from "./routes/productRoutes.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import bcrypt from "bcryptjs";
+import chatRoutes from "./routes/chatRoutes.js";
+
+
+import User from "./models/User.js";
+import { checkActiveUsers } from "./utils/engagementMailer.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
-// ⭐ CORS
+// ==============================
+// CORS
+// ==============================
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
       "http://127.0.0.1:5174",
-      "https://nonpedigreed-zonia-demagogically.ngrok-free.dev"
+      process.env.FRONTEND_URL,
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-// ⭐ VERY IMPORTANT (WEBHOOK FIRST)
+// ==============================
+// WEBHOOK (MUST BE BEFORE JSON)
+// ==============================
 app.use("/api/payment/webhook", express.raw({ type: "*/*" }));
 
-// ⭐ NORMAL JSON PARSER
+// ==============================
+// JSON
+// ==============================
 app.use(express.json());
 
-// ⭐ STATIC FILES
+// ==============================
+// STATIC FILES
+// ==============================
 app.use("/uploads", express.static("uploads"));
 app.use("/invoices", express.static("invoices"));
 
-// ⭐ LOGGER
+// ==============================
+// LOGGER
+// ==============================
 app.use((req, res, next) => {
   console.log(`API Hit → ${req.method} ${req.url}`);
   next();
 });
 
-// ⭐ ROUTES
+// ==============================
+// ROUTES
+// ==============================
 app.use("/api/auth", authRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/payment", paymentRoutes);
@@ -60,59 +76,68 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/admin", adminRoutes);
-import { checkActiveUsers } from "./utils/engagementMailer.js";
+app.use("/api/chat", chatRoutes);
 
- // every 1 min
-
-// ⭐ CREATE DEFAULT ADMIN
+// ==============================
+// CREATE DEFAULT ADMIN
+// ==============================
 const createAdmin = async () => {
   try {
     const adminEmail = "admin@gmail.com";
-    const adminPassword = "admin123";
 
-    await User.deleteMany({ email: adminEmail });
+    const existingAdmin = await User.findOne({
+      email: adminEmail,
+    });
 
-    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    if (existingAdmin) {
+      console.log("✅ Admin already exists");
+      return;
+    }
 
-    const admin = new User({
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+
+    await User.create({
       name: "Admin",
       email: adminEmail,
       password: hashedPassword,
       mobile: "9999999999",
-      role: "admin"
+      role: "admin",
     });
 
-    await admin.save();
-
-    console.log("✅ Admin created");
+    console.log("✅ Default Admin Created");
   } catch (error) {
     console.log("Admin creation error:", error);
   }
 };
 
-// ⭐ DATABASE
+// ==============================
+// DATABASE
+// ==============================
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGODB_URI)
   .then(async () => {
-    console.log("MongoDB Connected");
-    
-
-    // 🔥 ADD THESE 2 LINES
-    console.log("👉 DB NAME:", mongoose.connection.name);
-    console.log("👉 DB HOST:", mongoose.connection.host);
+    console.log("✅ MongoDB Connected");
+    console.log("DB Name:", mongoose.connection.name);
+    console.log("DB Host:", mongoose.connection.host);
 
     await createAdmin();
+
     setInterval(() => {
-  checkActiveUsers();
-}, 60000);
+      checkActiveUsers();
+    }, 60000);
   })
   .catch((err) => console.log("MongoDB Error:", err));
-// ⭐ ROOT
+
+// ==============================
+// ROOT
+// ==============================
 app.get("/", (req, res) => {
-  res.send("SnapEats backend running");
+  res.send("SnapEats Backend Running 🚀");
 });
 
-// ⭐ START SERVER
-app.listen(PORT, "127.0.0.1", () => {
-  console.log(`Server running at http://127.0.0.1:${PORT}`);
+// ==============================
+// START SERVER
+// ==============================
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

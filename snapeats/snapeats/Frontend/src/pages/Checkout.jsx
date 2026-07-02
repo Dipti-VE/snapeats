@@ -48,7 +48,7 @@ const handlePayment = async () => {
   try {
     // ✅ SEND EMAIL + CART TO BACKEND (for webhook)
     const { data: order } = await axios.post(
-      "http://127.0.0.1:5000/api/payment/create-order",
+      "http://127.0.0.1:4000/api/payment/create-order",
       {
         amount: total,
         email: loggedUser.email,
@@ -58,7 +58,7 @@ const handlePayment = async () => {
     );
 
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      key: "rzp_test_T8E3O32kArQpcW",
       amount: order.amount,
       currency: order.currency,
       name: "SnapEats",

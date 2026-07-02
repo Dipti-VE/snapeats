@@ -9,7 +9,7 @@ export default function AdminLogin({ setUser }) {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const BASE_URL = "http://127.0.0.1:5000";
+  const BASE_URL = "http://127.0.0.1:4000";
 
   const handleLogin = async (e) => {
     e.preventDefault();

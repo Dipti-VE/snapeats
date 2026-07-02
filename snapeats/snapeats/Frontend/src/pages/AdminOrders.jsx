@@ -7,7 +7,7 @@ export default function AdminOrders() {
   // Fetch all orders
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/orders"); // ✅ FIXED
+      const res = await axios.get("http://localhost:4000/api/orders"); // ✅ FIXED
       setOrders(res.data);
     } catch (error) {
       console.log("Error fetching orders", error);
@@ -22,7 +22,7 @@ export default function AdminOrders() {
   const updateStatus = async (id, status) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/admin/orders/${id}`,
+        `http://localhost:4000/api/admin/orders/${id}`,
         { status }
       );
       fetchOrders();
@@ -34,7 +34,7 @@ export default function AdminOrders() {
   // ❌ CANCEL ORDER (NEW 🔥)
   const cancelOrder = async (id) => {
     try {
-      await axios.post("http://localhost:5000/api/orders/cancel", {
+      await axios.post("http://localhost:4000/api/orders/cancel", {
         orderId: id,
       });
 

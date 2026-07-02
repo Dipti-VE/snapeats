@@ -17,7 +17,7 @@ export default function AdminAddProduct() {
  useEffect(() => {
   if (id) {
     const fetchProduct = async () => {
-      const res = await axios.get("http://127.0.0.1:5000/api/products");
+      const res = await axios.get("http://127.0.0.1:4000/api/products");
       const product = res.data.find(p => p._id === id);
 
       if (product) {
@@ -49,7 +49,7 @@ export default function AdminAddProduct() {
    if (id) {
     // 🔄 EDIT
     await axios.put(
-      `http://127.0.0.1:5000/api/products/${id}`,
+      `http://127.0.0.1:4000/api/products/${id}`,
       formData,
       {
         headers: {
@@ -63,7 +63,7 @@ export default function AdminAddProduct() {
    } else {
     // ➕ ADD
     await axios.post(
-      "http://127.0.0.1:5000/api/products/add",
+      "http://127.0.0.1:4000/api/products/add",
       formData,
       {
         headers: {

@@ -8,7 +8,7 @@ export default function AdminUsers() {
   // 🔹 Fetch users
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:5000/api/users");
+      const res = await axios.get("http://127.0.0.1:4000/api/users");
       setUsers(res.data);
     } catch (err) {
       console.log(err);

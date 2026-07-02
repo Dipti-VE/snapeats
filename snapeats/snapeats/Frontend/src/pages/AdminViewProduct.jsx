@@ -9,7 +9,7 @@ export default function AdminViewProduct(){
 
  const fetchProduct = async()=>{
 
-  const res = await axios.get("http://127.0.0.1:5000/api/products");
+  const res = await axios.get("http://127.0.0.1:4000/api/products");
 
   const found = res.data.find(p => p._id === id);
 
@@ -40,7 +40,7 @@ export default function AdminViewProduct(){
 
    {product.images && product.images.length > 0 && (
   <img
-    src={`http://127.0.0.1:5000/uploads/${product.images[0]}`}
+    src={`http://127.0.0.1:4000/uploads/${product.images[0]}`}
     alt={product.name}
     className="mt-4 w-64 rounded"
   />

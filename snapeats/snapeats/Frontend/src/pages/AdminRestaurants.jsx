@@ -10,7 +10,7 @@ export default function AdminRestaurants(){
  // 🔹 Fetch restaurants
  const fetchRestaurants = async () => {
   try {
-   const res = await axios.get("http://127.0.0.1:5000/api/restaurants");
+   const res = await axios.get("http://127.0.0.1:4000/api/restaurants");
    setRestaurants(res.data);
   } catch (err) {
    console.log(err);
@@ -24,7 +24,7 @@ export default function AdminRestaurants(){
  // 🔹 Delete restaurant
  const deleteRestaurant = async (id) => {
   try {
-   await axios.delete(`http://127.0.0.1:5000/api/restaurants/${id}`);
+   await axios.delete(`http://127.0.0.1:4000/api/restaurants/${id}`);
    alert("Restaurant deleted");
    fetchRestaurants(); // refresh
   } catch (err) {
@@ -72,7 +72,7 @@ export default function AdminRestaurants(){
       {/* ⭐ IMAGE */}
       {r.image && (
        <img
-        src={`http://127.0.0.1:5000/uploads/${r.image}`}
+        src={`http://127.0.0.1:4000/uploads/${r.image}`}
         alt={r.name}
         className="mt-3 w-48 rounded"
        />
