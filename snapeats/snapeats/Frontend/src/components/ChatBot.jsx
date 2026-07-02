@@ -60,14 +60,20 @@ export default function ChatBot() {
         }
       ]);
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: "bot",
-          text: "❌ Something went wrong. Please try again."
-        }
-      ]);
+  console.log("Chat Error:", err);
+  console.log("Response:", err.response);
+
+  setMessages((prev) => [
+    ...prev,
+    {
+      sender: "bot",
+      text:
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong."
     }
+  ]);
+}
 
     setLoading(false);
   };
