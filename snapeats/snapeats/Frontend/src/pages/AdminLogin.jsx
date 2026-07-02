@@ -26,8 +26,7 @@ export default function AdminLogin({ setUser }) {
       setUser(res.data.user);
 
       // redirect to admin panel
-      window.location.href = "/admin";
-
+      navigate("/admin");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
